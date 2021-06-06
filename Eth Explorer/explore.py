@@ -70,3 +70,41 @@ w3.eth.get_block_number()
 
 # Get chain ID
 w3.eth.chain_id
+
+# Hash text
+hash = w3.toHex(text="Logan's first hash")
+# print(hash)
+
+# Convert hash to text
+text = w3.toText(hash)
+# print(text)
+
+# Convert wei to ether
+def gwei_to_wei(gwei):
+    return gwei*1000000000
+ether_gas_price = w3.fromWei(gwei_to_wei(11.1), 'ether')
+# pprint(ether_gas_price)
+
+# Get current gas price in ether
+gas_price_wei = w3.eth.gas_price
+gas_price_ether = w3.fromWei(gas_price_wei, 'ether')
+# print(gas_price_ether)
+
+# Setting eth address used as default 'from' address for all transactions
+w3.eth.default_account = metamask
+
+# List of known accounts (how set known account?)
+# print(w3.eth.accounts)
+
+# Get balance of account
+balance = w3.eth.get_balance(metamask)
+# print(w3.fromWei(balance, "ether"))
+
+# Estimate gas price
+# estimate = w3.eth.estimate_gas({'to': ledger, 'from': metamask, 'value': 12345})
+# print(w3.fromWei(balance, "ether"))
+
+# Get gas prices needed to mine without certain amount of time
+seconds_60 = w3.gas_strategies.time_based.fast_gas_price_strategy
+print(seconds_60)
+
