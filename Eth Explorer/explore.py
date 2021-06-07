@@ -87,8 +87,8 @@ ether_gas_price = w3.fromWei(gwei_to_wei(11.1), 'ether')
 
 # Get current gas price in ether
 gas_price_wei = w3.eth.gas_price
-gas_price_ether = w3.fromWei(gas_price_wei, 'ether')
-# print(gas_price_ether)
+gas_price_ether = w3.fromWei(gas_price_wei, 'gwei')
+print(gas_price_ether)
 
 # Setting eth address used as default 'from' address for all transactions
 w3.eth.default_account = metamask
@@ -103,8 +103,4 @@ balance = w3.eth.get_balance(metamask)
 # Estimate gas price
 # estimate = w3.eth.estimate_gas({'to': ledger, 'from': metamask, 'value': 12345})
 # print(w3.fromWei(balance, "ether"))
-
-# Get gas prices needed to mine without certain amount of time
-seconds_60 = w3.gas_strategies.time_based.fast_gas_price_strategy
-print(seconds_60)
 
