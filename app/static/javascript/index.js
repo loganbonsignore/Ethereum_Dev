@@ -89,7 +89,7 @@ async function getTokenInfo(smartContractAddress, ethWalletAddress) {
 
 function updateTokenInfo(contractAddress, ethWalletAddress) {
     `
-    Updates webpage with new information at time of user interaction
+    Gets token information/ balance infomation for given contract and wallet addresses
     `
     // Remove old information if present
     let tokenInfo = d3.select("#token-information").selectAll("p")
@@ -146,7 +146,7 @@ function handleTextInputs() {
 
 function getEthBalance(ethAddress) {
     `
-    Gets Ethereum token balance on given eth wallet address
+    Gets Ethereum token balance of given wallet address
     `
     // Remove old information if present
     let ethBalanceInfo = d3.select("#eth-balance").selectAll("p")
@@ -163,16 +163,99 @@ function getEthBalance(ethAddress) {
             d3.select("#eth-balance").append("p").text(`Cannot load ETH balance due to query error: ${error}`);
         })
     }
+
+function displayBlockInformation(blockNumber="latest", transactionDisplay=false) {
+    `
+    Displays block information
+    Arguments:
+        1) blockNumber - Block number or hash to display
+        2) transactionDisplay - If true: display full transactions, if false: display hashed transactions
+    `
+    blockInfoElem = d3.select("#block-information");
+    web3.eth.getBlock(blockNumber, transactionDisplay).then(data => {
+        blockInfoElem.append("h2").text("Block Information");
+        // Display number of block transactions
+        web3.eth.getBlockTransactionCount(blockNumber).then(numTransactions => {
+            blockInfoElem.append("p").text(`number of transactions: ${numTransactions}`);
+        })
+        // Display block data
+        blockData = Object.entries(data);
+        blockData.forEach(elem => {
+            blockInfoElem
+                .append("p")
+                .text(`${elem[0]}: ${elem[1]}`);
+        })
+    });
+}
+
+function isHash() {
+    `
+    Determines if text entered is a hex value. Displays true or false based on result.
+    `
+    // Remove old information if present
+    let oldInfo = d3.select("#hash-test-container").selectAll("p")
+    if (oldInfo) {oldInfo.remove()}
+    // Get inputted value
+    let hash = document.getElementById("hash-test").value;
+    // Determine if hex
+    let result = web3.utils.isHex(hash);
+    // Display on web page
+    d3.select("#hash-test-container").append("p").text(result);
+}
+
+function textToHash() {
+    `
+    Converts text input to hex. Displays on web page.
+    `
+    // Remove old information if present
+    let oldInfo = d3.select("#hash-factory-container").selectAll("p")
+    if (oldInfo) {oldInfo.remove()}
+    // Get inputted value
+    let text = document.getElementById("hash-factory").value;
+    // Create hash
+    let hash = web3.utils.toHex(text);
+    // Add hash to web page
+    d3.select("#hash-factory-container").append("p").text(hash);
+}
+
+function hashToText() {
+    `
+    Converts hex to UTF-8 plain text. Displays on web page.
+    `
+    // Remove old information if present
+    let oldInfo = d3.select("#hash-to-text-container").selectAll("p")
+    if (oldInfo) {oldInfo.remove()}
+    // Get inputted value
+    let hash = document.getElementById("hash-to-text").value;
+    // Convert hash to text
+    let text = web3.utils.hexToUtf8(hash);
+    // Add text to web page
+    d3.select("#hash-to-text-container").append("p").text(text);
+}
+
 // ################################ End Definitions ################################
 
-// Text input event handlers
-addressInput = d3.select("#wallet-address")
-contractInput = d3.select("#contract-address")
+// Event handlers
+addressInput = d3.select("#wallet-address");
+contractInput = d3.select("#contract-address");
+blockButton = d3.select("#block-button");
+hashTestInput = d3.select("#hash-test");
+hashFactoryInput = d3.select("#hash-factory");
+hashToTextInput = d3.select("#hash-to-text");
 
-addressInput.on("change", handleTextInputs)
-addressInput.on("onsubmit", handleTextInputs)
-contractInput.on("change", handleTextInputs)
-contractInput.on("onsubmit", handleTextInputs)
+addressInput.on("change", handleTextInputs);
+addressInput.on("onsubmit", handleTextInputs);
+contractInput.on("change", handleTextInputs);
+contractInput.on("onsubmit", handleTextInputs);
+blockButton.on("click", displayBlockInformation);
+hashTestInput.on("change", isHash);
+hashTestInput.on("onsubmit", isHash);
+hashFactoryInput.on("change", textToHash);
+hashFactoryInput.on("onsubmit", textToHash);
+hashToTextInput.on("change", hashToText);
+hashToTextInput.on("onsubmit", hashToText);
+
+
 
 
 

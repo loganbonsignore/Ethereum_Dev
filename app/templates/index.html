@@ -26,15 +26,34 @@
         <p>Block Number</p>
     </div>
 
-    <!-- account information  -->
+    <!-- Account information  -->
     <div class="input">
         Eth Wallet Address: <input type="text" name="walletAddress" id="wallet-address">
         <br>
         Contract Address: <input type="text" name="contractAddress" id="contract-address">
     </div>
+    <!-- ETH balance -->
     <div id="eth-balance"></div>
+
+    <!-- Token information -->
     <div id="token-information"></div>
 
+    <!-- Block Information -->
+    <div id="block-information">
+        <button type="button" class="btn btn-primary" id="block-button">Get Block Info</button>
+    </div>
+
+    <div id="hash-test-container">
+        Test if hash: <input type="text" id="hash-test">
+    </div>
+
+    <div id="hash-factory-container">
+        Convert text to hash: <input type="text" id="hash-factory">
+    </div>
+
+    <div id="hash-to-text-container">
+        Convert hash to text: <input type="text" id="hash-to-text">
+    </div>
 </body>
 
 <!-- Local File Connections  -->
