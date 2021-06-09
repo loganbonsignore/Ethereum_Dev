@@ -2,3 +2,7 @@
 .selector-for-some-widget {
     box-sizing: content-box;
   }
+
+input {
+  width: 40%;
+}

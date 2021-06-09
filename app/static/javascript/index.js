@@ -80,10 +80,10 @@ async function getTokenInfo(smartContractAddress, ethWalletAddress) {
         var tokenSymbol = "unavailable";
     }
     return {
-        "name": name,
-        "symbol": tokenSymbol,
-        "balance": decimals_to_units(balance, decimals),
-        "totalSupply": decimals_to_units(totalSupply, decimals)
+        "Token Name": name,
+        "Token Symbol": tokenSymbol,
+        "Token Total Supply": decimals_to_units(totalSupply, decimals),
+        "Wallet Balance": decimals_to_units(balance, decimals),
     }
 }
 
@@ -91,11 +91,10 @@ function updateTokenInfo(contractAddress, ethWalletAddress) {
     `
     Updates webpage with new information at time of user interaction
     `
-    // Remove old token information if present
+    // Remove old information if present
     let tokenInfo = d3.select("#token-information").selectAll("p")
-    if (tokenInfo) {
-        tokenInfo.remove();
-    }
+    if (tokenInfo) {tokenInfo.remove();}
+    
     // Add new token information to page
     getTokenInfo(contractAddress, ethWalletAddress)
         // Use promise returned to display information
@@ -112,44 +111,68 @@ function updateTokenInfo(contractAddress, ethWalletAddress) {
                 .append("p")
                 .text(`Cannot load token information due to query error: ${error}`);
         });
-}
-
-function handleWalletChange() {
-    // Update new wallet address
-    if (d3.event.target.value === "metamask") {
-        var ethWalletAddress = metamask_address;
-    } else if (d3.event.target.value === "ledger") {
-        var ethWalletAddress = ledger_address;
     }
-    // Update information displayed on webpage
-    updateTokenInfo(contractAddress, ethWalletAddress)
+
+function handleTextInputs() {
+    `
+    Adds data to webpage when appropriate user inputs are provided
+    `
+    // Capture Input values
+    var walletAdd = document.getElementById("wallet-address").value;
+    var contractAdd = document.getElementById("contract-address").value;
+    // Display ETH balance
+    if (walletAdd) {
+        // Check if wallet address is valid
+        if (web3.utils.isAddress(walletAdd)) {
+            getEthBalance(walletAdd);
+        } else {
+            console.log("Wallet address not valid");
+        }
+    }
+    // Ensure both values are present to display token info
+    if (!walletAdd) {
+        console.log("No ETH wallet address provided");
+    } else if (!contractAdd) {
+        console.log("No smart contract address provided");
+    } else {
+        // Check if smart contract address is valid
+        if (web3.utils.isAddress(contractAdd)) {
+            updateTokenInfo(contractAdd, walletAdd);
+        } else {
+            console.log("Contract address not valid")
+        }
+    }
 }
 
+function getEthBalance(ethAddress) {
+    `
+    Gets Ethereum token balance on given eth wallet address
+    `
+    // Remove old information if present
+    let ethBalanceInfo = d3.select("#eth-balance").selectAll("p")
+    if (ethBalanceInfo) {ethBalanceInfo.remove();}
+    // Add new ETH balance information to page
+    web3.eth.getBalance(ethAddress)
+        .then(balance => {
+            // Convert Wei to Eth
+            let ethBalance = web3.utils.fromWei(balance, "ether");
+            // Add to webpage
+            d3.select("#eth-balance").append("p").text(`ETH Balance: ${ethBalance}`);
+        })
+        .catch(error => {
+            d3.select("#eth-balance").append("p").text(`Cannot load ETH balance due to query error: ${error}`);
+        })
+    }
 // ################################ End Definitions ################################
-let contractAddress = chainlinkContract
 
-// Get html button references
-var metamask = d3.select("#metamask");
-var ledger = d3.select("#ledger");
+// Text input event handlers
+addressInput = d3.select("#wallet-address")
+contractInput = d3.select("#contract-address")
 
-// Event listeners 
-metamask.on("click", handleWalletChange);
-ledger.on("click", handleWalletChange);
-
-// Runs at time of website load
-updateTokenInfo(contractAddress, ethWalletAddress);
-
-
-
-// Input field
-contractField = d3.select("#contract-address")
-contractField.on("change", handle)
-contractField.on("onsubmit", handle)
-
-function handle() {
-    var inputVal = document.getElementById("contract-address").value;
-    if (!inputVal) {} else {updateTokenInfo(inputVal, ethWalletAddress);}
-}
+addressInput.on("change", handleTextInputs)
+addressInput.on("onsubmit", handleTextInputs)
+contractInput.on("change", handleTextInputs)
+contractInput.on("onsubmit", handleTextInputs)
 
 
 

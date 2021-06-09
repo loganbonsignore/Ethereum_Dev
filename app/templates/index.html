@@ -17,26 +17,23 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
-    <!-- Gas price -->
-    <h1>{{gas_price}}</h1>
-    <p>gwei gas price</p>
-
-
-    <!-- Choose your wallet  -->
-    <div method="POST" action="/account"></div>
-        <button type="button" class="btn btn-primary" id="metamask" value="metamask" href="/account">Metamask</button>
-        <button type="button" class="btn btn-primary" id="ledger" value="ledger" href="/account">Ledger</button>
+    <div>
+        <!-- Gas price -->
+        <h1>{{gas_price}}</h1>
+        <p>Gwei Gas Price</p>
+        <!-- Block Number -->
+        <h1>{{block_number}}</h1>
+        <p>Block Number</p>
     </div>
 
     <!-- account information  -->
-    <div id="token-information">
+    <div class="input">
+        Eth Wallet Address: <input type="text" name="walletAddress" id="wallet-address">
+        <br>
         Contract Address: <input type="text" name="contractAddress" id="contract-address">
     </div>
-
-
-
-
-
+    <div id="eth-balance"></div>
+    <div id="token-information"></div>
 
 </body>
 

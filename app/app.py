@@ -14,9 +14,6 @@ class Node:
         # 'Ether', 'gwei', 'wei' are most popular
         if unit_type == "wei":
             return w3.eth.gas_price
-        # Add USD functionality here
-        elif unit_type in ["USD", "usd", "$"]:
-            raise RuntimeError("USD functionality is not available yet.")
         # Execute with provided unit type
         else:
             gas_price_wei = w3.eth.gas_price
@@ -49,7 +46,10 @@ app = Flask(__name__)
 # define routes
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html", gas_price=node.get_gas_price())
+    return render_template("index.html", 
+        gas_price=node.get_gas_price(),
+        block_number=w3.eth.get_block_number(),
+    )
 
 @app.route("/account", methods=["GET", "POST"])
 def account():
