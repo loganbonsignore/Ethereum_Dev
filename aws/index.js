@@ -82,8 +82,8 @@ async function getTokenInfo(smartContractAddress, ethWalletAddress) {
     return {
         "Token Name": name,
         "Token Symbol": tokenSymbol,
-        "Token Total Supply": decimals_to_units(totalSupply, decimals),
         "Wallet Balance": decimals_to_units(balance, decimals),
+        "Token Total Supply": decimals_to_units(totalSupply, decimals),
     }
 }
 
@@ -92,13 +92,16 @@ function updateTokenInfo(contractAddress, ethWalletAddress) {
     Gets token information/ balance infomation for given contract and wallet addresses
     `
     // Remove old information if present
-    let tokenInfo = d3.select("#token-information").selectAll("p")
-    if (tokenInfo) {tokenInfo.remove();}
+    let tokenInfo1 = d3.select("#token-information").selectAll("p")
+    let tokenInfo2 = d3.select("#token-information").selectAll("h3")
+    if (tokenInfo1) {tokenInfo1.remove();}
+    if (tokenInfo2) {tokenInfo2.remove();}
     
     // Add new token information to page
     getTokenInfo(contractAddress, ethWalletAddress)
         // Use promise returned to display information
         .then(info => {
+            d3.select("#token-information").append("h3").text("ERC-20 Token Balance")
             Object.entries(info).forEach(elem => {
                 d3.select("#token-information")
                     .append("p")
@@ -149,14 +152,17 @@ function getEthBalance(ethAddress) {
     Gets Ethereum token balance of given wallet address
     `
     // Remove old information if present
-    let ethBalanceInfo = d3.select("#eth-balance").selectAll("p")
-    if (ethBalanceInfo) {ethBalanceInfo.remove();}
+    let ethBalanceInfo1 = d3.select("#eth-balance").selectAll("p");
+    let ethBalanceInfo2 = d3.select("#eth-balance").selectAll("h3");
+    if (ethBalanceInfo1) {ethBalanceInfo1.remove();}
+    if (ethBalanceInfo2) {ethBalanceInfo2.remove();}
     // Add new ETH balance information to page
     web3.eth.getBalance(ethAddress)
         .then(balance => {
             // Convert Wei to Eth
             let ethBalance = web3.utils.fromWei(balance, "ether");
             // Add to webpage
+            d3.select("#eth-balance").append("h3").text("Wallet's ETH Balance")
             d3.select("#eth-balance").append("p").text(`ETH Balance: ${ethBalance}`);
         })
         .catch(error => {
@@ -172,8 +178,12 @@ function displayBlockInformation(blockNumber="latest", transactionDisplay=false)
         2) transactionDisplay - If true: display full transactions, if false: display hashed transactions
     `
     blockInfoElem = d3.select("#block-information");
+    // Remove old information if present
+    blockInfoElem.selectAll("p").remove()
+    // Add remove information button
+    var x = document.getElementById("block-remove-button");
+    x.style.display = "block";
     web3.eth.getBlock(blockNumber, transactionDisplay).then(data => {
-        blockInfoElem.append("h2").text("Block Information");
         // Display number of block transactions
         web3.eth.getBlockTransactionCount(blockNumber).then(numTransactions => {
             blockInfoElem.append("p").text(`number of transactions: ${numTransactions}`);
@@ -186,6 +196,17 @@ function displayBlockInformation(blockNumber="latest", transactionDisplay=false)
                 .text(`${elem[0]}: ${elem[1]}`);
         })
     });
+}
+
+function removeBlockInfo() {
+    // Remove old information if present
+    blockInfoElem = d3.select("#block-information");
+    blockInfoElem.selectAll("p").remove()
+    // Remove removeBlockButton
+    var x = document.getElementById("block-remove-button");
+    x.style.display = "none";
+    // Add back helper text
+    d3.select("#block-info-header").append("p").text("Click this button to get the latest blockchain information")
 }
 
 function isHash() {
@@ -233,21 +254,42 @@ function hashToText() {
     d3.select("#hash-to-text-container").append("p").text(text);
 }
 
+function getGasPriceNow() {
+    `
+    Adds current gas price to webpage on load
+    `
+    web3.eth.getGasPrice().then(gasPriceWei => {
+        let gasPrice = web3.utils.fromWei(gasPriceWei, "gwei");
+        d3.select("#gas-price").text(gasPrice)});
+}
+
+function getBlockNumberNow() {
+    `
+    Adds current block number to website on load
+    `
+    web3.eth.getBlockNumber().then(num => {
+        d3.select("#block-number").text(num);
+    })
+}
+
 // ################################ End Definitions ################################
 
 // Event handlers
 addressInput = d3.select("#wallet-address");
 contractInput = d3.select("#contract-address");
 blockButton = d3.select("#block-button");
+removeBlockButton = d3.select("#block-remove-button");
 hashTestInput = d3.select("#hash-test");
 hashFactoryInput = d3.select("#hash-factory");
 hashToTextInput = d3.select("#hash-to-text");
+
 
 addressInput.on("change", handleTextInputs);
 addressInput.on("onsubmit", handleTextInputs);
 contractInput.on("change", handleTextInputs);
 contractInput.on("onsubmit", handleTextInputs);
 blockButton.on("click", displayBlockInformation);
+removeBlockButton.on("click", removeBlockInfo)
 hashTestInput.on("change", isHash);
 hashTestInput.on("onsubmit", isHash);
 hashFactoryInput.on("change", textToHash);
@@ -255,35 +297,49 @@ hashFactoryInput.on("onsubmit", textToHash);
 hashToTextInput.on("change", hashToText);
 hashToTextInput.on("onsubmit", hashToText);
 
-// Data collected from block 12601904
-var hash = "0x3e8f21b1b8f5692ff54fe15bd5a4ac36e041e7221917eeb068bd9ee2fb769df1";
-var extraData = "0xd883010a03846765746888676f312e31362e34856c696e7578";
-var miner = "0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c";
-var mixHash = "0x7d8ed2db39f2c6c38c1c60ab629e9ffecb3b2be1b6d1bd006bb21f41708aa715";
-var nonce = "0x3249f90004b28ef6";
-var parentHash = "0x504bc8bea809df6e1e6aeaf88b6c1bf435ead5658ae00a59a1301234c259abc5";
-var receiptsRoot = "0xe04dc21d87751dd4af0325a501393d4428b9117e74a934d1f7b2f776bc23bde2";
-var sha3Uncles = "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347";
-var stateRoot = "0x3d56326d0d2eb90d9c05730f98f7ee2ceac3dd57a77016cf33476562529fa61c";
-var transaction = "0xdf0b86909938749e4fc11d11856844dd1dca898d09cd20c28be0eb583bda44bb";
-var transactionsRoot = "0xdb9f356532d8d8ab805063745a34766545729d3d817505c7b0d65c5fd777bb6b";
+// Functions run at page load
+getBlockNumberNow()
+getGasPriceNow()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // Data collected from block 12601904
+// var hash = "0x3e8f21b1b8f5692ff54fe15bd5a4ac36e041e7221917eeb068bd9ee2fb769df1";
+// var extraData = "0xd883010a03846765746888676f312e31362e34856c696e7578";
+// var miner = "0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c";
+// var mixHash = "0x7d8ed2db39f2c6c38c1c60ab629e9ffecb3b2be1b6d1bd006bb21f41708aa715";
+// var nonce = "0x3249f90004b28ef6";
+// var parentHash = "0x504bc8bea809df6e1e6aeaf88b6c1bf435ead5658ae00a59a1301234c259abc5";
+// var receiptsRoot = "0xe04dc21d87751dd4af0325a501393d4428b9117e74a934d1f7b2f776bc23bde2";
+// var sha3Uncles = "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347";
+// var stateRoot = "0x3d56326d0d2eb90d9c05730f98f7ee2ceac3dd57a77016cf33476562529fa61c";
+// var transaction = "0xdf0b86909938749e4fc11d11856844dd1dca898d09cd20c28be0eb583bda44bb";
+// var transactionsRoot = "0xdb9f356532d8d8ab805063745a34766545729d3d817505c7b0d65c5fd777bb6b";
 
 
 // let utf8 = web3.utils.hexToUtf8(transaction); // Works for: 
 // console.log(utf8);
 
-let ascii = web3.utils.hexToAscii(transaction);
-console.log(ascii);
+// let ascii = web3.utils.hexToAscii(transaction);
+// console.log(ascii);
 
 // let numberString = web3.utils.hexToNumberString(transaction); // Works for all
 // console.log(numberString);
 
 // let number = web3.utils.hexToNumber("0x39296"); // Data too big
 // console.log(number);
-
-
-
-
-
-
 
