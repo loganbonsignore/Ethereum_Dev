@@ -28,7 +28,7 @@
             <div class="col-md-6">
                 <!-- Gas price -->
                 <h2 id="gas-price"></h2>
-                <p>Gwei Gas Price</p>
+                <p>Gas Price (gwei)</p>
             </div>
         </div>
 
@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h3>Wallet Explorer</h3>
-                <p>Enter an Ethereum wallet address to view it's ETH balance<br>Enter an ERC-20 token's smart contract address to view the token balance</p>
+                <p>Enter an Ethereum wallet address to view it's ETH balance<br>Enter an ERC-20 token smart contract address to view the token balance</p>
             </div>
             <div class="col-md-12">
                 Eth Wallet Address: <input type="text" name="walletAddress" id="wallet-address">
@@ -67,9 +67,13 @@
                     <h3>Blockchain Live</h3>
                     <p>Click this button to get the latest blockchain information</p>
                 </div>
-                <div>
-                    <button type="button" class="btn btn-primary" id="block-button">Get Block Info</button>
-                    <button type="button" class="btn btn-danger" id="block-remove-button" style="display: none;">Remove Block Info</button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-primary" id="block-button">Get Block Info</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-danger" id="block-remove-button" style="display: none;">Remove Block Info</button>
+                    </div>
                 </div>
             </div>
         </div>  
@@ -80,16 +84,19 @@
         <div class="row">
             <div class="col-md-12">
                 <h3>Hashing Tools</h3>
-                <p>1) Test if hex string is valid<br>2) Convert text to hex<br>3) Convert hex to text</p>
+                <!-- <p>1) Test if hex string is valid<br>2) Convert text to hex<br>3) Convert hex to text</p> -->
             </div>
             <div class="col-md-12 hex-input" id="hash-test-container">
-                Is Valid Hex: <input type="text" id="hash-test">
+                <strong>Is Valid Hex:</strong> <input type="text" id="hash-test">
+                <p><i>Test if hex string is valid hex format</i></p>
             </div>
             <div class="col-md-12 hex-input" id="hash-factory-container">
-                Text to Hex: <input type="text" id="hash-factory">
+                <strong>Text to Hex:</strong> <input type="text" id="hash-factory">
+                <p><i>Convert text to hex</i></p>
             </div>
             <div class="col-md-12 hex-input" id="hash-to-text-container">
-                Hex to Text: <input type="text" id="hash-to-text">
+                <strong>Hex to Text:</strong> <input type="text" id="hash-to-text">
+                <p><i>Convert hex to text</i></p>
             </div>
         </div>
 
