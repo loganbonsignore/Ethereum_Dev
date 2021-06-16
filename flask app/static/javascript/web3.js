@@ -43,6 +43,11 @@ let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // let text = web3.utils.hexToUtf8(hash);
 // console.log(text);
 
+// Gets transaction overview
+// web3.eth.getTransactionReceipt("0xcd56733f645c37662850fe294552c0e2bbfccc846df3af396a8ec4da6077bb0c").then(console.log);
+
+// Gets transaction data, including input
+web3.eth.getTransaction("0xcd56733f645c37662850fe294552c0e2bbfccc846df3af396a8ec4da6077bb0c").then(console.log);
 
 
 

@@ -15,6 +15,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- Web3 -->
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <!-- ABI Decoder -->
+    <!-- <script src="bower_components/abi-decoder/dist/abi-decoder.js"></script> -->
 </head>
 <body>
     <div class="container">
@@ -55,6 +57,29 @@
             <div class="col-md-6">
                 <!-- Token information -->
                 <div id="token-information"></div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <!-- Transaction Explorer  -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Transaction Explorer</h3>
+                <p>Enter an Ethereum transaction hash to view it's metadata</p>
+            </div>
+            <div class="col-md-12">
+                Transaction Hash: <input type="text" name="transactionHash" id="transaction-hash">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Transaction Receipt -->
+                <div id="tx-receipt"></div>
+            </div>
+            <div class="col-md-6">
+                <!-- Transaction Data -->
+                <div id="tx-data"></div>
             </div>
         </div>
 

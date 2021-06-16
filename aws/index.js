@@ -2,7 +2,6 @@
 const etherscan_api_key = "6AMB9PGBYJ5AHHCZHCCZAU5Y7E4KEVET47"
 
 // Instanciating Web3 object
-// var web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('wss://https://mainnet.infura.io/v3/58ea22f2caa14187bd2b8c0682c84848:8546'));
 var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/58ea22f2caa14187bd2b8c0682c84848'));
 
 
@@ -157,7 +156,32 @@ function getEthBalance(ethAddress) {
         })
     }
 
-function displayBlockInformation(blockNumber="latest", transactionDisplay=false) {
+function handleTxInput() {
+    `
+    Displays transaction data of given transaction hash
+    `
+    // Remove old information if present
+    let txReceiptData = d3.select("#tx-receipt").selectAll("p");
+    let txDataData = d3.select("#tx-data").selectAll("p");
+    if (txReceiptData) {txReceiptData.remove();}
+    if (txDataData) {txDataData.remove();}
+    // Get inputted transaction hash
+    let transactionHash = document.getElementById("transaction-hash").value;
+    // Gets transaction overview
+    web3.eth.getTransactionReceipt(transactionHash).then(txReceipt => {
+        Object.entries(txReceipt).forEach(tx => {
+            d3.select("#tx-receipt").append("p").text(`${tx[0]}: ${tx[1]}`);
+        })
+    });
+    // Gets transaction data, including input
+    web3.eth.getTransaction(transactionHash).then(txData => {
+        Object.entries(txData).forEach(tx => {
+            d3.select("#tx-data").append("p").text(`${tx[0]}: ${tx[1]}`);
+        })
+    });
+}
+
+function displayBlockInformation(blockNumber="latest", transactionDisplay=true) {
     `
     Displays block information
     Arguments:
@@ -240,10 +264,13 @@ function hashToText() {
         let text = web3.utils.hexToUtf8(hash);
         d3.select("#hash-to-text-container").append("p").text(text);
     } catch (error) {
-        d3.select("#hash-to-text-container").append("p").text(`Cannot complete request with error message: '${error}'`);
+        try {
+            let text = web3.utils.hexToAscii(hash);
+            d3.select("#hash-to-text-container").append("p").text(text);
+        } catch (error) {
+            d3.select("#hash-to-text-container").append("p").text(`Cannot complete request with error message: '${error}'`);
+        }
     }
-    
-;
 }
 
 function getGasPriceNow() {
@@ -274,6 +301,7 @@ removeBlockButton = d3.select("#block-remove-button");
 hashTestInput = d3.select("#hash-test");
 hashFactoryInput = d3.select("#hash-factory");
 hashToTextInput = d3.select("#hash-to-text");
+transactionHashInput = d3.select("#transaction-hash")
 
 addressInput.on("change", handleTextInputs);
 addressInput.on("onsubmit", handleTextInputs);
@@ -287,7 +315,39 @@ hashFactoryInput.on("change", textToHash);
 hashFactoryInput.on("onsubmit", textToHash);
 hashToTextInput.on("change", hashToText);
 hashToTextInput.on("onsubmit", hashToText);
+transactionHashInput.on("click", handleTxInput)
+transactionHashInput.on("onsubmit", handleTxInput)
 
 // Functions run at page load
 getBlockNumberNow()
 getGasPriceNow()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Converts string to SHA3
+// let string = "Logan Bonsignore"
+// console.log(web3.utils.sha3("myFunction(address,uint256[])"));
+
+// calculate the sha3 of given input parameters in the same way solidity would. This means arguments will be ABI converted and tightly packed before being hashed.
+// web3.utils.soliditySha3('234564535', '0xfff23243', true, -10);
+// auto detects:        uint256,      bytes,     bool,   int256
+//  "0x3e27a893dc40ef8a7f0841d96639de2f58a132be5ae466d40087a2cfa83b7179"
+
+// Removes 0x prefix from hex value
+// web3.utils.stripHexPrefix('0x234');
