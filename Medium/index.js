@@ -1,5 +1,5 @@
 // Etherscan API key
-const etherscan_api_key = "6AMB9PGBYJ5AHHCZHCCZAU5Y7E4KEVET47"
+const etherscanAPIKey = "6AMB9PGBYJ5AHHCZHCCZAU5Y7E4KEVET47"
 
 // Instantiating Web3 object
 var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/58ea22f2caa14187bd2b8c0682c84848'));
@@ -8,69 +8,24 @@ var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v
 // ############################### Start Definitions ###############################
 
 function decimals_to_units(tokenUnits, decimals) {
-    `
-    Converts token units to 'human-friendly' decimal notation
-    Arguments:
-        1) Token units in original format
-        2) Number of decimals the token has
-    `
-    if (tokenUnits === "unavailable") {
-        return tokenUnits;
-    }
     let decimalsInt = parseInt(decimals);
     let tokenUnit = tokenUnits.slice(0, -decimalsInt) + "." + tokenUnits.slice(-decimalsInt);
     return parseFloat(tokenUnit);
 }
 
-async function getTokenInfo(smartContractAddress, ethWalletAddress) {
-    `
-    Retrieves token information provided by smart contract
-    Arguments:
-        1) Smart contract address of the token of interest
-        2) Ethereum wallet address of the wallet you want to find balance of given token
-    `
+async function getTokenBalance(smartContractAddress, ethWalletAddress) {
     // ABI endpoint provided by Etherscan
-    let etherscan_abi_endpoint = `https://api.etherscan.io/api?module=contract&action=getabi&address=${smartContractAddress}&apikey=${etherscan_api_key}`
+    let etherscan_abi_endpoint = `https://api.etherscan.io/api?module=contract&action=getabi&address=${smartContractAddress}&apikey=${etherscanAPIKey}`
     // Call the endpoint
     let abi = await d3.json(etherscan_abi_endpoint);
     // Create Web3 contract object
     let contract = new web3.eth.Contract(JSON.parse(abi.result), smartContractAddress);
-    // Unit Decimals
-    try {
-        var decimals = await contract.methods.decimals().call();
-    } catch (error) {
-        var decimals = "0";
-    }
-    // Balance on Ethereum wallet
-    try {
-        var balance = await contract.methods.balanceOf(ethWalletAddress).call();
-    } catch (error) {
-        var balance = "unavailable";
-    }
-    // Token Name
-    try {
-        var name = await contract.methods.name().call();
-    } catch (error) {
-        var name = "unavailable";
-    }
-    // Total Supply
-    try {
-        var totalSupply = await contract.methods.totalSupply().call();
-    } catch (error) {
-        var totalSupply = "unavailable";
-    }
-    // Token Symbol
-    try {
-        var tokenSymbol = await contract.methods.symbol().call();
-    } catch (error) {
-        var tokenSymbol = "unavailable";
-    }
-    return {
-        "Token Name": name,
-        "Token Symbol": tokenSymbol,
-        "Wallet Balance": decimals_to_units(balance, decimals),
-        "Token Total Supply": decimals_to_units(totalSupply, decimals),
-    }
+    // Get balance of ERC20 token on Ethereum wallet
+    let balance = await contract.methods.balanceOf(ethWalletAddress).call();
+    // Get number of decimals used for ERC20 token
+    let decimals = await contract.methods.decimals().call();
+    // Return human friendly token balance to user
+    return decimals_to_units(balance, decimals);
 }
 
 function updateTokenInfo(contractAddress, ethWalletAddress) {
@@ -322,12 +277,13 @@ transactionHashInput.on("onsubmit", handleTxInput)
 getBlockNumberNow()
 getGasPriceNow()
 
+// getTokenInfo("0x514910771af9ca656af840dff83e8264ecf986ca", "0xD806e6019AC21714B3B96b0731DD0715Ef2f08AC");
 
 
 
 
 
-
+console.log(web3.version);
 
 
 
