@@ -47,7 +47,6 @@ Timestamp – The time at which a miner mined the transaction.
 From – The address of the account that submitted the transaction.
 To – The address of the recipient or smart contract that the transaction interacts with.
 Tokens transferred – A list of tokens that were transferred as part of the transaction.
-Tokens transferred – A list of tokens that were transferred as part of the transaction.
 Value – The total ETH value being transferred.
 Transaction fee – The amount paid to the miner to process the transaction (calculated by gas price*gas used).
 Gas limit – The maximum numbers of gas units this transaction can consume.
