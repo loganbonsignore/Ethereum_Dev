@@ -1,11 +1,10 @@
 from web3 import Web3
 import requests
 import json
+from config import INFURA_MAINNET_CONNECTION_URL, ETHERSCAN_API_KEY
 
 # Connect to Ethereum node
-web3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/58ea22f2caa14187bd2b8c0682c84848'))
-
-ETHERSCAN_API_KEY = "6AMB9PGBYJ5AHHCZHCCZAU5Y7E4KEVET47"
+web3 = Web3(Web3.HTTPProvider(INFURA_MAINNET_CONNECTION_URL))
 
 ############################### Start definitions ###############################
 

@@ -9,10 +9,11 @@ metamask = "0x97BAd4347C45b8DF0F4ebf24D8F0250c8366F8ef"
 # Uses a remote node provider to interact with Ethereum blockchain (Infura)
 from web3 import Web3
 from pprint import pprint
+from config import INFURA_MAINNET_CONNECTION_URL
 
 # Provided from Infura's website when project created
 # Connection to ethereum node
-w3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/58ea22f2caa14187bd2b8c0682c84848'))
+w3 = Web3(Web3.HTTPProvider(INFURA_MAINNET_CONNECTION_URL))
 
 # Get ETH balance for wallet address
 ledger_balance = w3.eth.get_balance(ledger)
