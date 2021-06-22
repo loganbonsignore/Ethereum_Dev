@@ -110,9 +110,8 @@ print(f"Tx Parameters: {input_data['params']}")
 
 # To Do:
     # Breakdown transaction vs transaction receipt, block data
-    # Explore source code of contrat creation tx
+    # Explore source code of contract creation tx
     # Explore 'verified contract' spreadsheet
-    # Restructure blockchain repo
     # Final data visualization in Flask
 
 
